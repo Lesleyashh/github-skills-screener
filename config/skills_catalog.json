@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "containerisation": ["dockerfile", "docker_compose"],
+    "ci": ["github_actions"],
+    "testing": ["pytest_tests"],
+    "python": ["python_project"],
+    "iac": ["terraform", "helm"],
+    "data": ["sql", "dbt"],
+    "orchestration" : ["airflow"],
+    "code_quality": ["pre_commit", "dependabot", "codeowners"],
+    "documentation": ["documentation_readme", "license"],
+    "api_development": ["rest_api_framework"]
+  }
+}

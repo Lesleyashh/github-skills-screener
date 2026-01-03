@@ -1,0 +1,23 @@
+{
+  "job_id": "org-12345",
+  "name": "Senior Engineer",
+  "version": 1,
+  "skills_required": [
+    "python",
+    "containerisation",
+    "ci",
+    "testing",
+    "iac"
+  ],
+  "skills_optional": [
+    "code_quality",
+    "documentation",
+    "api_development"
+  ],
+  "activity": {
+    "updated_within_days": 365
+  },
+  "scoring": {
+    "pass_threshold": 70
+  }
+}

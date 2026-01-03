@@ -1,0 +1,92 @@
+
+{
+  "version": 1,
+  "evidence_signals": {
+    "dockerfile": {
+      "jd_requirement": "Uses Docker",
+      "description": "Indicates the candidate has experience packaging applications into reproducible, portable containers, which supports consistent deployment across environments and reduces \"works on my machine\" issues.",
+      "file_globs": ["Dockerfile"]
+    },
+    "docker_compose": {
+      "jd_requirement": "Uses Docker Compose",
+      "description": "Suggests familiarity with orchestrating multi-service local environments, which is valuable for developing and testing distributed systems and service dependencies.",
+      "file_globs": ["docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"]
+    },
+    "github_actions": {
+      "jd_requirement": "Uses CI (GitHub Actions)",
+      "description": "Demonstrates exposure to continuous integration practices, including automated testing, linting, and build pipelines, which are critical for maintaining code_quality and delivery velocity.",
+      "file_globs": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
+    },
+    "pytest_tests": {
+      "jd_requirement": "Testing present",
+      "description": "Shows that automated tests are part of the development workflow, signalling an understanding of regression prevention, code safety, and long-term maintainability.",
+      "file_globs": ["tests/**", "pytest.ini", "tox.ini"]
+    },
+    "python_project": {
+      "jd_requirement": "Python project structure",
+      "description": "Indicates familiarity with Python packaging and dependency management conventions, which supports reproducible builds, environment isolation, and collaboration.",
+      "file_globs": ["pyproject.toml", "requirements.txt", "setup.cfg", "setup.py"]
+    },
+    "terraform": {
+      "jd_requirement": "Terraform",
+      "description": "Signals experience with Infrastructure as Code, enabling version-controlled, repeatable, and auditable infrastructure changes aligned with modern cloud engineering practices.",
+      "file_globs": ["**/*.tf", "**/*.tfvars"]
+    },
+    "sql": {
+      "jd_requirement": "SQL",
+      "description": "Indicates exposure to relational data querying and transformation, which is foundational for data-intensive systems, analytics pipelines, and backend services.",
+      "file_globs": ["**/*.sql", "**/*.ddl","**/*.dml"]
+    },
+    "documentation_readme": {
+      "jd_requirement": "Documentation",
+      "description": "Shows an effort to document usage, setup, or design decisions, supporting knowledge sharing, onboarding, and long-term maintainability within a team.",
+      "file_globs": ["README*", "readme*", "Readme*"]
+    },
+    "license": {
+      "jd_requirement": "License present",
+      "description": "Indicates awareness of open-source licensing and intellectual property considerations, which is important for legal compliance and responsible software reuse.",
+      "file_globs": ["LICENSE*", "license*", "LICENCE*", "licence*", "COPYING*", "copying*"]
+    },
+    "pre_commit": {
+      "jd_requirement": "code_quality automation",
+      "description": "Suggests the use of automated checks (formatting, linting, static analysis) before commits, helping teams enforce standards and reduce low-quality changes entering the codebase.",
+      "file_globs": [".pre-commit-config.yaml"]
+    },
+    "dependabot": {
+      "jd_requirement": "Dependency automation",
+      "description": "Shows awareness of dependency hygiene and security updates, reducing the risk of known vulnerabilities and maintenance debt over time.",
+      "file_globs": [".github/dependabot.yml", ".github/dependabot.yaml"]
+    },
+    "codeowners": {
+      "jd_requirement": "Ownership / review structure",
+      "description": "Indicates familiarity with code ownership and review workflows, which supports accountability, clearer responsibility boundaries, and scalable team collaboration.",
+      "file_globs": [".github/CODEOWNERS", "CODEOWNERS"]
+    },
+    "dbt": {
+      "jd_requirement": "dbt",
+      "description": "Signals experience with analytics engineering workflows, including version-controlled SQL transformations and data modeling.",
+      "file_globs": ["dbt_project.yml", "models/**"]
+    }, 
+    "airflow": {
+      "jd_requirement": "Workflow orchestration",
+      "description": "Indicates exposure to scheduled or event-driven data pipelines using Airflow-style DAGs.",
+      "file_globs": ["dags/**", "**/*dag*.py"]
+    },
+    "rest_api_framework": {
+      "jd_requirement": "api_development",
+      "description": "Suggests experience building RESTful services using common Python frameworks.",
+      "file_globs": ["**/fastapi/**", "**/flask/**", "**/django/**"]
+    }, 
+    "makefile": {
+      "jd_requirement": "Build / task automation",
+      "description": "Indicates use of standardised developer commands for building, testing, or running the project, supporting consistency across contributors.",
+      "file_globs": ["Makefile"]
+    },
+    "helm": {
+      "jd_requirement": "Kubernetes / Helm",
+      "description": "Suggests experience packaging and deploying applications to Kubernetes using Helm charts, a common pattern in cloud-native environments.",
+      "file_globs": ["Chart.yaml", "charts/**", "values.yaml"]
+    }
+
+  }
+}

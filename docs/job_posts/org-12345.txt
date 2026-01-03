@@ -1,0 +1,21 @@
+Senior Engineer: org-12345
+
+We’re hiring a Senior Engineer to build and maintain production-grade APIs and internal tooling.
+
+What we’re looking for:
+- Strong Python engineering experience
+- Containerisation (Docker)
+- CI/CD experience (ideally GitHub Actions)
+- Testing culture (pytest or similar)
+- Terraform / infrastructure automation
+
+Nice to have:
+- code_quality automation (pre-commit, linters)
+- Dependency management automation (Dependabot)
+- Clear documentation (README, usage guides)
+- api_development (e.g., FastAPI/Flask/Django)
+
+Screening note:
+If you provide a GitHub username, we may use an automated tool to validate publicly available evidence
+in your repositories (e.g., presence of Dockerfile, tests, CI workflows). This is only one input into
+the process and does not replace interviews.

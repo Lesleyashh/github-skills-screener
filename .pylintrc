@@ -1,0 +1,6 @@
+[DESIGN]
+max-attributes=12
+min-public-methods=1
+
+[MESSAGES CONTROL]
+disable=protected-access, unused-variable

@@ -1,0 +1,15 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# local sqlite + local candidate lists (treat as personal data)
+data/app.db
+config/usernames.txt
+
+# editors
+.vscode/
+.idea/
+.DS_Store
