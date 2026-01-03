@@ -7,9 +7,12 @@ venv/
 
 # local sqlite + local candidate lists (treat as personal data)
 data/app.db
-config/usernames.txt
+candidate_input/job_roles/org-12345/usernames.txt
 
 # editors
 .vscode/
 .idea/
 .DS_Store
+
+reports/*
+!reports/.gitkeep

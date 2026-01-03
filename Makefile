@@ -1,4 +1,4 @@
-.PHONY: help venv install install-dev lint test scan report purge clean export require-job-id ensure-report-dir
+.PHONY: help venv install install-dev lint test scan report purge clean export require-job-id ensure-report-dir test test-unit test-integration test-all
 
 PY := .venv/bin/python
 PIP := .venv/bin/pip
@@ -29,7 +29,7 @@ require-job-id:
 		exit 1; \
 	fi
 
-# Derived paths based on JOB_ID (no defaults)
+# Local testing
 JD_PATH = config/job_roles/$(JOB_ID)/job_skills.json
 USERNAMES_PATH = candidate_input/job_roles/$(JOB_ID)/usernames.txt
 
@@ -59,8 +59,14 @@ install-dev: install
 lint:
 	$(PRECOMMIT) run --all-files
 
-test:
+test-unit:
 	$(PYTEST) -m "not integration" -v
+
+test-integration:
+	$(PYTEST) -m "integration" -v
+	
+test-all:
+	$(PYTEST) -v
 
 scan: require-job-id
 	$(PY) main.py scan \
@@ -77,17 +83,14 @@ purge:
 
 clean:
 	rm -rf .venv data/app.db
-
-# Export (caller can override OUT, MIN_SCORE, VERSION)
-MIN_SCORE ?= 0
-OUT ?= data/reports/$(JOB_ID).csv
-
 ensure-report-dir:
-	@mkdir -p "$$(dirname "$(OUT)")"
+	@mkdir -p reports/$(JOB_ID)
 
-export: require-job-id ensure-report-dir
+MIN_SCORE ?= 0
+VERSION ?= 1
+export: ensure-report-dir
 	$(PY) main.py export \
 		--job-id $(JOB_ID) \
-		--out $(OUT) \
-		--min-score $(MIN_SCORE) \
-		$(if $(VERSION),--version $(VERSION),)
+		--out reports/$(JOB_ID)/report.csv
+		--min-score $(MIN_SCORE)
+		--version $(VERSION)

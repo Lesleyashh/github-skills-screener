@@ -27,13 +27,18 @@ def test_all_required_pass():
 
 def test_none_required_fail():
     jd = _jd(["python", "ci"], ["documentation", "code_quality"])
-    profile = _profile({"python": False, "ci": False, "documentation": True, "code_quality": True})
+    profile = _profile(
+        {"python": False, "ci": False, "documentation": True, "code_quality": True}
+    )
     res = match_profile_to_jd(profile, jd)
     assert res.status == "FAIL"
 
 
 def test_half_required_and_two_optional_pass():
-    jd = _jd(["python", "ci", "testing", "iac"], ["documentation", "code_quality", "api_development"])
+    jd = _jd(
+        ["python", "ci", "testing", "iac"],
+        ["documentation", "code_quality", "api_development"],
+    )
     # 2/4 required = 50% and 2 optional matched => PASS
     profile = _profile(
         {
@@ -50,7 +55,10 @@ def test_half_required_and_two_optional_pass():
 
 
 def test_half_required_but_only_one_optional_fail():
-    jd = _jd(["python", "ci", "testing", "iac"], ["documentation", "code_quality", "api_development"])
+    jd = _jd(
+        ["python", "ci", "testing", "iac"],
+        ["documentation", "code_quality", "api_development"],
+    )
     # 2/4 required = 50% but only 1 optional => FAIL
     profile = _profile(
         {
@@ -74,8 +82,18 @@ def test_more_than_half_required_but_zero_optional_fail():
 
 
 def test_less_than_half_required_fail_even_with_optional():
-    jd = _jd(["python", "ci", "testing", "iac"], ["documentation", "code_quality", "api_development"])
+    jd = _jd(
+        ["python", "ci", "testing", "iac"],
+        ["documentation", "code_quality", "api_development"],
+    )
     # 1/4 required < 50% => FAIL even if optional is strong
-    profile = _profile({"python": True, "documentation": True, "code_quality": True, "api_development": True})
+    profile = _profile(
+        {
+            "python": True,
+            "documentation": True,
+            "code_quality": True,
+            "api_development": True,
+        }
+    )
     res = match_profile_to_jd(profile, jd)
     assert res.status == "FAIL"

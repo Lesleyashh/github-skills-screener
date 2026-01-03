@@ -2,7 +2,12 @@ from unittest.mock import patch, Mock
 import pytest
 import requests
 
-from github_api_app.client import GitHubAPIClient, GitHubAPIError, GitHubUser, GitHubRepository
+from github_api_app.client import (
+    GitHubAPIClient,
+    GitHubAPIError,
+    GitHubUser,
+    GitHubRepository,
+)
 
 
 class TestMakeRequest:
@@ -48,7 +53,9 @@ class TestGetUser:
 
 class TestGetRepos:
     @patch.object(GitHubAPIClient, "_make_request")
-    def test_get_user_repositories_success(self, mock_request, api_client, sample_repos_data):
+    def test_get_user_repositories_success(
+        self, mock_request, api_client, sample_repos_data
+    ):
         mock_request.return_value = sample_repos_data
         repos = api_client.get_user_repositories("octocat")
         assert len(repos) == 1

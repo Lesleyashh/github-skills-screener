@@ -94,7 +94,9 @@ def match_profile_to_jd(profile: Dict[str, Any], jd: JobDescription) -> MatchRes
     )
 
 
-def _partition(skills: List[str], evidence: Dict[str, bool]) -> tuple[List[str], List[str]]:
+def _partition(
+    skills: List[str], evidence: Dict[str, bool]
+) -> tuple[List[str], List[str]]:
     matched: List[str] = []
     missing: List[str] = []
 
@@ -107,7 +109,9 @@ def _partition(skills: List[str], evidence: Dict[str, bool]) -> tuple[List[str],
     return matched, missing
 
 
-def _apply_activity_warning(activity: Dict[str, Any], jd: JobDescription, warnings: List[str]) -> None:
+def _apply_activity_warning(
+    activity: Dict[str, Any], jd: JobDescription, warnings: List[str]
+) -> None:
     window = jd.activity.get("updated_within_days")
     if not window:
         return

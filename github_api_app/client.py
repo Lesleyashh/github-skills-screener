@@ -19,8 +19,9 @@ class GitHubAPIError(Exception):
 @dataclass(frozen=True)
 class GitHubUser:
     """Minimal GitHub user fields used by this app."""
+
     login: str  # username (can change)
-    id: int     # stable identity
+    id: int  # stable identity
     name: Optional[str]
     public_repos: int
     created_at: str
@@ -30,8 +31,9 @@ class GitHubUser:
 @dataclass(frozen=True)
 class GitHubRepository:
     """Minimal GitHub repo fields used by this app."""
+
     name: str
-    full_name: str              # "owner/repo" (needed for repo tree calls)
+    full_name: str  # "owner/repo" (needed for repo tree calls)
     archived: bool
     is_fork: bool
     default_branch: str
@@ -58,7 +60,9 @@ class GitHubAPIClient:
             headers["Authorization"] = f"token {self.token}"
         self.session.headers.update(headers)
 
-    def _make_request(self, endpoint: str, params: Optional[Dict[str, Any]] = None) -> Any:
+    def _make_request(
+        self, endpoint: str, params: Optional[Dict[str, Any]] = None
+    ) -> Any:
         url = f"{self.base_url}{endpoint}"
 
         try:
@@ -115,7 +119,9 @@ class GitHubAPIClient:
         data = self._make_request(f"/users/{username}/repos", params=params)
 
         if not isinstance(data, list):
-            raise GitHubAPIError("Unexpected API response format: expected list of repositories")
+            raise GitHubAPIError(
+                "Unexpected API response format: expected list of repositories"
+            )
 
         repos: List[GitHubRepository] = []
         for repo in data:

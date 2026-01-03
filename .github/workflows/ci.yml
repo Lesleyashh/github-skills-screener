@@ -23,49 +23,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
+          pre-commit install-hooks
 
       - name: Pre-commit
         run: pre-commit run --all-files
 
       - name: Unit tests
         run: pytest -m "not integration" -v
-
-      - name: Run scan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python main.py scan \
-            --usernames config/usernames.txt \
-            --jd config/org-12345/job_skills.json
-
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-json
-      - id: check-added-large-files
-
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
-    hooks:
-      - id: black
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-
-  - repo: https://github.com/pylint-dev/pylint
-    rev: v3.2.7
-    hooks:
-      - id: pylint
-        args: ["--rcfile=.pylintrc", "github_api_app", "main.py"]
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.2
-    hooks:
-      - id: mypy
-        args: ["--config-file=mypy.ini", "github_api_app"]

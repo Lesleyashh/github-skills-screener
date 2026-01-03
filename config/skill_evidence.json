@@ -66,7 +66,7 @@
       "jd_requirement": "dbt",
       "description": "Signals experience with analytics engineering workflows, including version-controlled SQL transformations and data modeling.",
       "file_globs": ["dbt_project.yml", "models/**"]
-    }, 
+    },
     "airflow": {
       "jd_requirement": "Workflow orchestration",
       "description": "Indicates exposure to scheduled or event-driven data pipelines using Airflow-style DAGs.",
@@ -76,7 +76,7 @@
       "jd_requirement": "api_development",
       "description": "Suggests experience building RESTful services using common Python frameworks.",
       "file_globs": ["**/fastapi/**", "**/flask/**", "**/django/**"]
-    }, 
+    },
     "makefile": {
       "jd_requirement": "Build / task automation",
       "description": "Indicates use of standardised developer commands for building, testing, or running the project, supporting consistency across contributors.",

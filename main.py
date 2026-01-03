@@ -5,7 +5,7 @@ import csv
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 
 from github_api_app.client import GitHubAPIClient, GitHubAPIError
 from github_api_app.database import (
@@ -24,8 +24,9 @@ logger = logging.getLogger(__name__)
 
 
 # -------------------------
-# Helper Functions 
+# Helper Functions
 # -------------------------
+
 
 def configure_logging(level: str) -> None:
     logging.basicConfig(
@@ -108,7 +109,12 @@ def cmd_scan(args: argparse.Namespace) -> None:
                 max_repos_to_scan=args.max_repos_to_scan,
             )
         except GitHubAPIError as e:
-            logger.error("GitHub API error for %s: %s (status=%s)", username, e.message, e.status_code)
+            logger.error(
+                "GitHub API error for %s: %s (status=%s)",
+                username,
+                e.message,
+                e.status_code,
+            )
             continue
 
         user = profile.get("user", {}) or {}
@@ -116,7 +122,9 @@ def cmd_scan(args: argparse.Namespace) -> None:
         github_username = user.get("login") or profile.get("username") or username
 
         if github_user_id is None:
-            logger.error("Missing GitHub user id for %s; cannot store results.", username)
+            logger.error(
+                "Missing GitHub user id for %s; cannot store results.", username
+            )
             continue
 
         # Upsert profile snapshot + derived signals
@@ -190,7 +198,9 @@ def cmd_report(args: argparse.Namespace) -> None:
         reasons = json.loads(r["reasons_json"]) if r.get("reasons_json") else []
         warnings = json.loads(r["warnings_json"]) if r.get("warnings_json") else []
 
-        print(f"- {r['github_username']} (id={r['github_user_id']}): {r['status']} | score={r['score']} | updated={r['profile_updated_at']}")
+        print(
+            f"- {r['github_username']} (id={r['github_user_id']}): {r['status']} | score={r['score']} | updated={r['profile_updated_at']}"
+        )
         for reason in reasons:
             print(f"    • {reason}")
         for warn in warnings:
@@ -234,7 +244,9 @@ def cmd_export(args: argparse.Namespace) -> None:
         for r in rows:
             writer.writerow(r)
 
-    print(f"Exported {len(rows)} rows to {out_path} for {rows[0].get('job_name')} (v{rows[0].get('job_version')}).")
+    print(
+        f"Exported {len(rows)} rows to {out_path} for {rows[0].get('job_name')} (v{rows[0].get('job_version')})."
+    )
 
 
 def cmd_purge(args: argparse.Namespace) -> None:
@@ -249,22 +261,47 @@ def cmd_purge(args: argparse.Namespace) -> None:
 # CLI
 # -------------------------
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="GitHub Evidence Screener (opt-in, public evidence only)")
-    parser.add_argument("--log-level", default="INFO", help="DEBUG, INFO, WARNING, ERROR")
+    parser = argparse.ArgumentParser(
+        description="GitHub Evidence Screener (opt-in, public evidence only)"
+    )
+    parser.add_argument(
+        "--log-level", default="INFO", help="DEBUG, INFO, WARNING, ERROR"
+    )
 
     sub = parser.add_subparsers(dest="command", required=True)
 
-    scan = sub.add_parser("scan", help="Scan usernames against a Job Description config")
-    scan.add_argument("--usernames", required=True, help="Path to usernames.txt (one GitHub username per line)")
-    scan.add_argument("--jd", required=True, help="Path to job_skills.json for the role")
-    scan.add_argument("--token", default=None, help="Optional GitHub token (or set GITHUB_TOKEN env var)")
-    scan.add_argument("--max-repos", type=int, default=50, help="Max repos to fetch per user (<=100)")
-    scan.add_argument("--max-repos-to-scan", type=int, default=20, help="Max repos to scan for evidence")
+    scan = sub.add_parser(
+        "scan", help="Scan usernames against a Job Description config"
+    )
+    scan.add_argument(
+        "--usernames",
+        required=True,
+        help="Path to usernames.txt (one GitHub username per line)",
+    )
+    scan.add_argument(
+        "--jd", required=True, help="Path to job_skills.json for the role"
+    )
+    scan.add_argument(
+        "--token",
+        default=None,
+        help="Optional GitHub token (or set GITHUB_TOKEN env var)",
+    )
+    scan.add_argument(
+        "--max-repos", type=int, default=50, help="Max repos to fetch per user (<=100)"
+    )
+    scan.add_argument(
+        "--max-repos-to-scan",
+        type=int,
+        default=20,
+        help="Max repos to scan for evidence",
+    )
     scan.set_defaults(func=cmd_scan)
 
     report = sub.add_parser("report", help="Show stored results for a job_id")
     report.add_argument("--job-id", required=True, help="Job ID (e.g. org-12345)")
-    report.add_argument("--version", type=int, default=None, help="JD version (defaults to latest)")
+    report.add_argument(
+        "--version", type=int, default=None, help="JD version (defaults to latest)"
+    )
     report.add_argument("--min-score", type=int, default=0, help="Minimum score filter")
     report.set_defaults(func=cmd_report)
 
@@ -272,11 +309,17 @@ def build_parser() -> argparse.ArgumentParser:
     export.add_argument("--job-id", required=True, help="Job id (e.g. org-12345)")
     export.add_argument("--out", required=True, help="Output CSV path")
     export.add_argument("--min-score", type=int, default=0, help="Minimum score filter")
-    export.add_argument("--version", type=int, default=None, help="Job version (default: latest)")
+    export.add_argument(
+        "--version", type=int, default=None, help="Job version (default: latest)"
+    )
     export.set_defaults(func=cmd_export)
 
-    purge = sub.add_parser("purge", help="Purge stored personal data older than N days (retention)")
-    purge.add_argument("--days", type=int, default=90, help="Keep data for the last N days")
+    purge = sub.add_parser(
+        "purge", help="Purge stored personal data older than N days (retention)"
+    )
+    purge.add_argument(
+        "--days", type=int, default=90, help="Keep data for the last N days"
+    )
     purge.set_defaults(func=cmd_purge)
 
     return parser

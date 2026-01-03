@@ -44,8 +44,16 @@ class JobDescription:
             name=str(data["name"]),
             version=version,
             job_id=job_id,
-            skills_required=[str(s).strip() for s in data.get("skills_required", []) if str(s).strip()],
-            skills_optional=[str(s).strip() for s in data.get("skills_optional", []) if str(s).strip()],
+            skills_required=[
+                str(s).strip()
+                for s in data.get("skills_required", [])
+                if str(s).strip()
+            ],
+            skills_optional=[
+                str(s).strip()
+                for s in data.get("skills_optional", [])
+                if str(s).strip()
+            ],
             activity=dict(data.get("activity", {})),
             scoring=dict(data.get("scoring", {})),
         )
@@ -78,7 +86,9 @@ class JobDescription:
         data = json.loads(Path(catalog_path).read_text(encoding="utf-8"))
         skills = data.get("skills")
         if not isinstance(skills, dict):
-            raise ValueError(f"Invalid skills catalog format: {catalog_path} (missing 'skills' dict)")
+            raise ValueError(
+                f"Invalid skills catalog format: {catalog_path} (missing 'skills' dict)"
+            )
         return set(skills.keys())
 
     @staticmethod

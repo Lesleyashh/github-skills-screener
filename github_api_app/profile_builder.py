@@ -6,6 +6,9 @@ from typing import Any, Dict, List
 from github_api_app.client import GitHubAPIClient, GitHubRepository, GitHubUser
 from github_api_app.evidence import extract_evidence
 
+from pathlib import Path
+import json
+
 
 def build_developer_profile(
     client: GitHubAPIClient,
@@ -29,7 +32,10 @@ def build_developer_profile(
         return {
             "username": user.login,
             "user": user_block,
-            "activity": {"days_since_last_update": None, "most_recent_updated_at": None},
+            "activity": {
+                "days_since_last_update": None,
+                "most_recent_updated_at": None,
+            },
             "evidence": {},
             "precheck_fail_reason": "User has 0 public repositories; no evidence can be evaluated.",
         }
@@ -50,9 +56,10 @@ def build_developer_profile(
         "username": user.login,
         "user": user_block,
         "activity": activity,
-        "evidence": skills,   
-
+        "evidence": skills,
     }
+
+
 def _extract_activity(repos: List[GitHubRepository]) -> Dict[str, Any]:
     most_recent: datetime | None = None
     for r in repos:
@@ -65,7 +72,10 @@ def _extract_activity(repos: List[GitHubRepository]) -> Dict[str, Any]:
 
     now = datetime.now(timezone.utc)
     days = (now - most_recent).days
-    return {"days_since_last_update": days, "most_recent_updated_at": most_recent.isoformat()}
+    return {
+        "days_since_last_update": days,
+        "most_recent_updated_at": most_recent.isoformat(),
+    }
 
 
 def _parse_github_iso(s: str) -> datetime | None:
@@ -76,14 +86,13 @@ def _parse_github_iso(s: str) -> datetime | None:
     except Exception:
         return None
 
-import json
-from pathlib import Path
-from typing import Dict
 
 SKILLS_CATALOG_PATH = Path("config/skills_catalog.json")
 
 
-def map_evidence_to_skills(evidence: Dict[str, bool], catalog_path: Path = SKILLS_CATALOG_PATH) -> Dict[str, bool]:
+def map_evidence_to_skills(
+    evidence: Dict[str, bool], catalog_path: Path = SKILLS_CATALOG_PATH
+) -> Dict[str, bool]:
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     skills = catalog.get("skills", {})
     if not isinstance(skills, dict):
@@ -92,7 +101,11 @@ def map_evidence_to_skills(evidence: Dict[str, bool], catalog_path: Path = SKILL
     skill_flags: Dict[str, bool] = {}
     for skill_name, evidence_keys in skills.items():
         if not isinstance(evidence_keys, list):
-            raise ValueError(f"Invalid evidence list for skill '{skill_name}' in {catalog_path}")
-        skill_flags[skill_name] = any(bool(evidence.get(k, False)) for k in evidence_keys)
+            raise ValueError(
+                f"Invalid evidence list for skill '{skill_name}' in {catalog_path}"
+            )
+        skill_flags[skill_name] = any(
+            bool(evidence.get(k, False)) for k in evidence_keys
+        )
 
     return skill_flags

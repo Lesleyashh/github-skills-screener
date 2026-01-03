@@ -212,6 +212,7 @@ def insert_match_result(
 # Reads
 # -----------------------------
 
+
 def fetch_report_for_job(
     job_id: str,
     version: Optional[int] = None,
@@ -222,7 +223,10 @@ def fetch_report_for_job(
 
     # Default to latest version for that job_id
     if version is None:
-        cur.execute("SELECT MAX(version) AS v FROM job_descriptions WHERE job_id = ?", (str(job_id),))
+        cur.execute(
+            "SELECT MAX(version) AS v FROM job_descriptions WHERE job_id = ?",
+            (str(job_id),),
+        )
         row = cur.fetchone()
         if row is None or row["v"] is None:
             conn.close()

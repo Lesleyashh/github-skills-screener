@@ -1,4 +1,4 @@
-# GitHub Evidence Screener
+# GitHub Skills Screener
 
 A lightweight, opt-in screening tool that validates **public GitHub evidence**
 against **explicit, transparent job criteria**.
@@ -86,4 +86,22 @@ For CI usage:
 env:
   GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
 
+## Matching Logic (Screening Rules)
 
+This tool applies a **simple, transparent rule-based matcher** to determine whether a candidate automatically passes screening.
+
+A candidate **PASS**es if **either** of the following is true:
+
+- **All required skills are evidenced**, **or**
+- **At least 50% of required skills are evidenced _and_ at least 2 optional skills are evidenced**
+
+A candidate **FAIL**s otherwise.
+
+### Why this approach?
+
+- Keeps the screening logic **explainable and auditable**
+- Avoids overfitting or opaque scoring models
+- Allows strong optional signals to compensate for partial required coverage
+- Easy to communicate to candidates and reviewers
+
+This matcher is intentionally conservative and is designed to be **one input into a broader hiring process**, not a final decision-maker.
