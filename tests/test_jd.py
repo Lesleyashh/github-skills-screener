@@ -35,7 +35,7 @@ def test_load_json_accepts_known_skills(tmp_path, monkeypatch):
                 "name": "senior engineer",
                 "version": 1,
                 "skills_required": ["python", "ci"],
-                "skills_optional": ["documentation"],
+                "skills_optional": ["documentation", "iac"],
                 "activity": {"updated_within_days": 365},
                 "scoring": {"pass_threshold": 70},
             }
@@ -47,7 +47,7 @@ def test_load_json_accepts_known_skills(tmp_path, monkeypatch):
 
     assert jd.job_id == "org-12345"
     assert jd.skills_required == ["python", "ci"]
-    assert jd.skills_optional == ["documentation"]
+    assert jd.skills_optional == ["documentation", "iac"]
 
 
 def test_load_json_rejects_unknown_skill(tmp_path, monkeypatch):
@@ -74,7 +74,7 @@ def test_load_json_rejects_unknown_skill(tmp_path, monkeypatch):
                 "job_id": "org-12345",
                 "name": "senior engineer",
                 "version": 1,
-                "skills_required": ["python"],
+                "skills_required": ["python", "iac"],
                 "skills_optional": ["code_qualityyyyyy", "documentation"],
                 "activity": {},
                 "scoring": {},
