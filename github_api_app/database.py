@@ -10,6 +10,9 @@ DB_PATH = Path("data/app.db")
 
 
 def get_connection() -> sqlite3.Connection:
+    """
+    Return a SQLite connection with row access by column name.
+    """
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -18,11 +21,7 @@ def get_connection() -> sqlite3.Connection:
 
 def init_db() -> None:
     """
-    Initialise database schema.
-
-    NOTE:
-    - No migrations are performed.
-    - If the schema changes, delete data/app.db and rerun.
+    Create database tables if they do not already exist.
     """
     conn = get_connection()
     cur = conn.cursor()
@@ -69,15 +68,15 @@ def init_db() -> None:
     conn.close()
 
 
-# -----------------------------
-# Writes
-# -----------------------------
 def upsert_developer_profile(
     github_user_id: int,
     github_username: str,
     raw_user: Dict[str, Any],
     signals: Dict[str, Any],
 ) -> int:
+    """
+    Insert or update a developer profile keyed by GitHub user ID.
+    """
     now = datetime.utcnow().isoformat()
 
     conn = get_connection()
@@ -131,6 +130,9 @@ def insert_job_description(
     version: int,
     criteria: Dict[str, Any],
 ) -> int:
+    """
+    Insert a job description if it does not already exist.
+    """
     conn = get_connection()
     cur = conn.cursor()
 
@@ -177,6 +179,9 @@ def insert_match_result(
     reasons: List[str],
     warnings: List[str],
 ) -> None:
+    """
+    Insert or update the match result for a profile and job.
+    """
     conn = get_connection()
     cur = conn.cursor()
 
@@ -218,10 +223,12 @@ def fetch_report_for_job(
     version: Optional[int] = None,
     min_score: int = 0,
 ) -> List[Dict[str, Any]]:
+    """
+    Return match results for a job, optionally filtered by version and score.
+    """
     conn = get_connection()
     cur = conn.cursor()
 
-    # Default to latest version for that job_id
     if version is None:
         cur.execute(
             "SELECT MAX(version) AS v FROM job_descriptions WHERE job_id = ?",
@@ -266,7 +273,12 @@ def fetch_report_for_job(
 # -----------------------------
 # Retention
 # -----------------------------
+
+
 def purge_old_data(days: int = 90) -> Dict[str, int]:
+    """
+    Delete stored data older than the retention window.
+    """
     conn = get_connection()
     cur = conn.cursor()
 

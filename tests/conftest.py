@@ -1,14 +1,25 @@
 import pytest
 from github_api_app.client import GitHubAPIClient
 
+"""
+Shared pytest fixtures for GitHub API client tests.
+
+Provides:
+- a mocked GitHubAPIClient instance
+- representative user and repository payloads
+used across unit tests to avoid duplication.
+"""
+
 
 @pytest.fixture
 def api_client():
+    """GitHub API client with a dummy token for tests."""
     return GitHubAPIClient(token="test_token")
 
 
 @pytest.fixture
 def sample_user_data():
+    """Representative GitHub user payload."""
     return {
         "login": "octocat",
         "id": 583231,
@@ -22,6 +33,7 @@ def sample_user_data():
 
 @pytest.fixture
 def sample_repos_data():
+    """Representative GitHub repository payload."""
     return [
         {
             "name": "Hello-World",

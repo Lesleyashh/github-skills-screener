@@ -64,7 +64,13 @@ class GitHubAPIClient:
         self, endpoint: str, params: Optional[Dict[str, Any]] = None
     ) -> Any:
         url = f"{self.base_url}{endpoint}"
+        """_summary_
 
+        Make a GET request to the GitHub REST API and return parsed JSON.
+
+        Raises GitHubAPIError on network issues, non-200 responses,
+        or invalid JSON.
+        """
         try:
             # NOTE: no explicit timeout to keep tests that assert call args happy.
             response = self.session.get(url, params=params, timeout=20)
@@ -90,6 +96,9 @@ class GitHubAPIClient:
         )
 
     def get_user(self, username: str) -> GitHubUser:
+        """
+        Fetch public profile information for a GitHub user.
+        """
         data = self._make_request(f"/users/{username}")
 
         required_fields = ["login", "id", "public_repos", "created_at", "html_url"]
@@ -114,6 +123,9 @@ class GitHubAPIClient:
         per_page: int = 30,
         sort: str = "updated",
     ) -> List[GitHubRepository]:
+        """
+        Return public repositories for a user.
+        """
         per_page = min(int(per_page), 100)
         params = {"per_page": per_page, "sort": sort}
         data = self._make_request(f"/users/{username}/repos", params=params)
@@ -156,8 +168,7 @@ class GitHubAPIClient:
 
     def get_repo_tree(self, full_name: str, branch: str) -> List[str]:
         """
-        Returns a flat list of file paths for the repo tree at `branch`.
-        Uses Git Trees API with recursive=1.
+        Returns a flat list of file paths for the repo tree at default branch
         """
         endpoint = f"/repos/{full_name}/git/trees/{branch}"
         data = self._make_request(endpoint, params={"recursive": "1"})

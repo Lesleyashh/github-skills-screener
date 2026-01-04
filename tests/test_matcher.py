@@ -75,7 +75,7 @@ def test_half_required_but_only_one_optional_fail():
 
 def test_more_than_half_required_but_zero_optional_fail():
     jd = _jd(["python", "ci", "testing", "iac"], ["documentation", "code_quality"])
-    # 3/4 required >=50% but 0 optional => FAIL (per your rules)
+    # 3/4 required >=50% but 0 optional => FAIL
     profile = _profile({"python": True, "ci": True, "testing": True, "iac": False})
     res = match_profile_to_jd(profile, jd)
     assert res.status == "FAIL"
@@ -86,7 +86,6 @@ def test_less_than_half_required_fail_even_with_optional():
         ["python", "ci", "testing", "iac"],
         ["documentation", "code_quality", "api_development"],
     )
-    # 1/4 required < 50% => FAIL even if optional is strong
     profile = _profile(
         {
             "python": True,

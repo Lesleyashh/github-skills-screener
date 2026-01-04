@@ -73,7 +73,6 @@ def cmd_scan(args: argparse.Namespace) -> None:
     if not jd.job_id:
         raise SystemExit(f"JD file is missing job_id: {args.jd}")
 
-    # Store JD snapshot (idempotent by (job_id, version) in your DB implementation)
     jd_db_id = insert_job_description(
         job_id=jd.job_id,
         name=jd.name,

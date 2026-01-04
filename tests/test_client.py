@@ -1,3 +1,12 @@
+"""
+Unit tests for GitHubAPIClient request handling and response parsing.
+
+Covers:
+- successful and failed HTTP requests
+- validation of required fields in API responses
+- repository list handling and parameter bounds
+"""
+
 from unittest.mock import patch, Mock
 import pytest
 import requests
@@ -11,6 +20,8 @@ from github_api_app.client import (
 
 
 class TestMakeRequest:
+    """Tests low-level HTTP request handling and error cases."""
+
     @patch("requests.Session.get")
     def test_successful_request(self, mock_get, api_client):
         mock_response = Mock()
@@ -36,6 +47,8 @@ class TestMakeRequest:
 
 
 class TestGetUser:
+    """Tests GitHub user retrieval and response validation."""
+
     @patch.object(GitHubAPIClient, "_make_request")
     def test_get_user_success(self, mock_request, api_client, sample_user_data):
         mock_request.return_value = sample_user_data
@@ -52,6 +65,8 @@ class TestGetUser:
 
 
 class TestGetRepos:
+    """Tests repository listing behaviour and parameter limits."""
+
     @patch.object(GitHubAPIClient, "_make_request")
     def test_get_user_repositories_success(
         self, mock_request, api_client, sample_repos_data

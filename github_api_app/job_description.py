@@ -24,7 +24,7 @@ class JobDescription:
     def load_json(path_or_job_id: str | Path) -> "JobDescription":
         """
         Accepts either:
-        - a file path to a JD json, OR
+        - a file path to a Job description json, OR
         - a job_id like "org-12345" which resolves to:
           config/job_roles/<job_id>/job_skills.json
         """
@@ -63,6 +63,18 @@ class JobDescription:
 
     @staticmethod
     def _resolve_job_path(path_or_job_id: str | Path) -> Path:
+        """
+        Resolve a Job Description JSON file path.
+
+        Accepts either:
+        - a direct file path to a JD JSON file, or
+        - a job_id (e.g. "org-12345"), which is resolved to:
+        config/job_roles/<job_id>/job_skills.json
+
+        Raises:
+            ValueError: if the input is empty
+            FileNotFoundError: if the resolved JD file does not exist
+        """
         raw = Path(path_or_job_id)
 
         # If it's an existing file path, use it.
@@ -83,6 +95,15 @@ class JobDescription:
 
     @staticmethod
     def _load_known_skills(catalog_path: Path = SKILLS_CATALOG_PATH) -> Set[str]:
+        """
+        Load the set of valid skill names from the skills catalog.
+
+        Returns a set of skill identifiers defined under the `skills` key
+        in the catalog JSON.
+
+        Raises:
+            ValueError: if the catalog format is invalid
+        """
         data = json.loads(Path(catalog_path).read_text(encoding="utf-8"))
         skills = data.get("skills")
         if not isinstance(skills, dict):
@@ -93,6 +114,13 @@ class JobDescription:
 
     @staticmethod
     def _validate_against_skills_catalog(jd: "JobDescription") -> None:
+        """
+        Validate that all skills referenced by the Job Description
+        exist in the skills catalog.
+
+        Raises:
+            ValueError: if the JD references unknown skills
+        """
         known = JobDescription._load_known_skills()
         unknown = sorted(set(jd.skills_required + jd.skills_optional) - known)
 

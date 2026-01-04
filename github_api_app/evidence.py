@@ -17,10 +17,10 @@ def extract_evidence(
     catalog_path: Path = EVIDENCE_CATALOG_PATH,
 ) -> Dict[str, bool]:
     """
-    Extract boolean evidence signals using public repository file trees.
+    Derive boolean evidence signals from public repository file trees.
 
-    Rule: evidence_key becomes True if ANY file_glob matches ANY path
-    in ANY scanned repo.
+    A signal is marked true if any configured file pattern matches
+    any file in any scanned repository
     """
     evidence_catalog = _load_evidence_catalog(catalog_path)
     evidence_signals = evidence_catalog["evidence_signals"]
@@ -60,6 +60,11 @@ def extract_evidence(
 
 
 def _load_evidence_catalog(path: Path) -> Dict[str, object]:
+    """
+    Load and validate the evidence catalog JSON.
+
+    Ensures the file contains an `evidence_signals` mapping.
+    """
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if "evidence_signals" not in data or not isinstance(data["evidence_signals"], dict):
         raise ValueError(f"Invalid evidence catalog format: {path}")
@@ -67,6 +72,9 @@ def _load_evidence_catalog(path: Path) -> Dict[str, object]:
 
 
 def _matches_any(paths: set[str], globs: List[str]) -> bool:
+    """
+    Return True if any file path matches any of the provided glob patterns.
+    """
     for g in globs:
         g = g.replace("\\", "/")
         for p in paths:

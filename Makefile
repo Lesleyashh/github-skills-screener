@@ -64,7 +64,7 @@ test-unit:
 
 test-integration:
 	$(PYTEST) -m "integration" -v
-	
+
 test-all:
 	$(PYTEST) -v
 
@@ -81,7 +81,7 @@ DAYS ?= 90
 purge:
 	$(PY) main.py purge --days $(DAYS)
 
-clean:
+data-clean:
 	rm -rf .venv data/app.db
 ensure-report-dir:
 	@mkdir -p reports/$(JOB_ID)

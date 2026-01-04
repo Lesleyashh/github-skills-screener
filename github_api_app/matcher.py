@@ -7,7 +7,11 @@ from github_api_app.job_description import JobDescription
 
 @dataclass(frozen=True)
 class MatchResult:
-    status: str  # PASS / FAIL
+    """
+    Result of matching a candidate profile against a Job Description.
+    """
+
+    status: str
     reasons: List[str]
     warnings: List[str]
     required_matched: List[str]
@@ -17,6 +21,13 @@ class MatchResult:
 
 
 def match_profile_to_jd(profile: Dict[str, Any], jd: JobDescription) -> MatchResult:
+    """
+    Evaluate a candidate profile against a Job Description.
+
+    Uses derived evidence signals to determine whether required and
+    optional skills are satisfied, applies simple decision rules,
+    and returns an explainable match result.
+    """
     evidence: Dict[str, bool] = dict(profile.get("evidence", {}) or {})
     activity: Dict[str, Any] = dict(profile.get("activity", {}) or {})
 
@@ -97,6 +108,9 @@ def match_profile_to_jd(profile: Dict[str, Any], jd: JobDescription) -> MatchRes
 def _partition(
     skills: List[str], evidence: Dict[str, bool]
 ) -> tuple[List[str], List[str]]:
+    """
+    Split a list of skills into matched skills and missing skills based on evidence flags.
+    """
     matched: List[str] = []
     missing: List[str] = []
 
@@ -112,6 +126,10 @@ def _partition(
 def _apply_activity_warning(
     activity: Dict[str, Any], jd: JobDescription, warnings: List[str]
 ) -> None:
+    """
+    Append an activity-related warning if the profile falls outside
+    the preferred recency window defined in the Job Description.
+    """
     window = jd.activity.get("updated_within_days")
     if not window:
         return

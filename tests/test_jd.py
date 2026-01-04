@@ -1,13 +1,16 @@
-import json
+"""
+Tests for JobDescription JSON loading and skill validation.
+"""
 
+import json
 import pytest
 
 import github_api_app.job_description as jd_mod
 from github_api_app.job_description import JobDescription
 
 
-def test_job_description_load_json_validates_known_skills(tmp_path, monkeypatch):
-    # Arrange: temporary skills catalog
+def test_load_json_accepts_known_skills(tmp_path, monkeypatch):
+    """JobDescription loads successfully when all skills exist in the catalog."""
     catalog_path = tmp_path / "skills_catalog.json"
     catalog_path.write_text(
         json.dumps(
@@ -22,11 +25,8 @@ def test_job_description_load_json_validates_known_skills(tmp_path, monkeypatch)
         ),
         encoding="utf-8",
     )
-
-    # Make JobDescription read the temp catalog instead of repo config/
     monkeypatch.setattr(jd_mod, "SKILLS_CATALOG_PATH", catalog_path)
 
-    # Arrange: a valid JD that uses only known skills
     jd_path = tmp_path / "job_skills.json"
     jd_path.write_text(
         json.dumps(
@@ -43,16 +43,15 @@ def test_job_description_load_json_validates_known_skills(tmp_path, monkeypatch)
         encoding="utf-8",
     )
 
-    # Act
     jd = JobDescription.load_json(jd_path)
 
-    # Assert
     assert jd.job_id == "org-12345"
     assert jd.skills_required == ["python", "ci"]
     assert jd.skills_optional == ["documentation"]
 
 
-def test_job_description_load_json_raises_on_unknown_skill(tmp_path, monkeypatch):
+def test_load_json_rejects_unknown_skill(tmp_path, monkeypatch):
+    """Unknown skills in the JD config should raise a clear validation error."""
     catalog_path = tmp_path / "skills_catalog.json"
     catalog_path.write_text(
         json.dumps(

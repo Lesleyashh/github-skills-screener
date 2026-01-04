@@ -1,15 +1,7 @@
 # GitHub Skills Screener
 
-A lightweight, opt-in screening tool that validates **public GitHub evidence**
-against **explicit, transparent job criteria**.
-
-This tool evaluates **only**:
-- what a candidate explicitly provides (a GitHub username)
-- what is publicly accessible on GitHub
-
-It does **not** infer seniority or proficiency.
-It checks for observable evidence signals (e.g. Dockerfile, tests, CI workflows)
-and produces an explainable PASS / FAIL result.
+A lightweight, opt-in screening tool that validates file presence from **public GitHub users repos**
+against **explicit job skills criteria**.
 
 ---
 
@@ -18,6 +10,7 @@ and produces an explainable PASS / FAIL result.
 - Reducing **manual CV screening noise**
 - Making early-stage screening **consistent and explainable**
 - Supporting (not replacing) human review and interviews
+- Enabling **clear, actionable feedback** at early hiring stages
 
 ---
 
@@ -27,39 +20,36 @@ and produces an explainable PASS / FAIL result.
 - It does **not** rank candidates by “strength”
 - It does **not** penalise private or proprietary work
 - It does **not** scrape, clone, or inspect commit history
+- It does **not** infer seniority or proficiency from file presence
 
 ---
 
 ## How it works
 
+# Assumption(s)
+- Users explicitly opt-in to screening by providing a GitHub username in job application
+- Recruiters provide a plain .txt file with **one username per line**.
+- The tool is used within a single organisation with consistent recruitment practices
+
 1. A **job role** defines required and optional **skills**
-2. Skills are mapped to **evidence signals**
-3. Evidence signals are mapped to **file globs**
-4. Public repositories are scanned (forks excluded)
-5. Results are stored locally and reported in a readable format
+2. Skills map to business-defined **evidence signals**
+3. Evidence signals map to **file glob patterns**
+4. Only Public non-forked and non-archived repositories are scanned to detect these file patterns and candidate given a score based on how many match.
+5. Results are stored locally in a lightweight SQLite database (`data/app.db`) to support reporting and exporting
 
 ---
 
-## Matching rules
+### Screening rules
 
-A candidate **PASSES** if **either**:
+A candidate **PASS**es if **either**:
 
-- **All required skills are matched**
-- **At least half of required skills are matched AND at least 2 optional skills are matched**
+- **All required skills are matched**, **or**
+- **At least 50% of required skills are matched AND at least 2 optional skills are matched**
+- Allows strong optional signals to compensate for partial required coverage
 
 Otherwise, the candidate **FAILS**.
 
-This rule is intentionally simple and easy to explain in an interview.
-
----
-
-## Assumptions & constraints
-
-- Candidates explicitly opt-in by providing a GitHub username
-- Only **public** GitHub data is evaluated
-- Forked repositories are excluded
-- File presence is a heuristic, not proof of authorship or depth
-- Activity recency is contextual only
+Logic in github_api_app/matcher.py
 
 ---
 
@@ -68,40 +58,131 @@ This rule is intentionally simple and easy to explain in an interview.
 - GitHub usernames are treated as personal data
 - The local database (`data/app.db`) is **not committed**
 - Candidate username files are **not committed**
-- A purge command exists to enforce data retention
 - Data can be deleted on request
+- A purge command enforces data retention like:
+
+   ```bash
+   make purge DAYS=90
+   ```
 
 ---
 
-## Authentication & rate limits
+## Authentication & Rate limits
 
-A GitHub token is optional but recommended.
+A GitHub PAT token is optional but recommended.
 
-- Without token: low rate limits (testing only)
-- With token: higher rate limits (recommended)
+## GitHub API endpoints used
 
-For CI usage:
+- `GET /users/{username}`
+- `GET /users/{username}/repos`
+- `GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1`
 
-```yaml
-env:
-  GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
+### Without token
+- ~60 requests/hour (suitable for local testing only)
 
-## Matching Logic (Screening Rules)
+### With token
+- ~5000 requests/hour
+- Recommended for real usage and CI
 
-This tool applies a **simple, transparent rule-based matcher** to determine whether a candidate automatically passes screening.
+### Getting a GitHub Token
+1. Go to [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
+2. Generate new classic token
+3. No specific scopes needed as only public data used
+4. Copy token and export as `GITHUB_TOKEN` environment variable
 
-A candidate **PASS**es if **either** of the following is true:
+---
 
-- **All required skills are evidenced**, **or**
-- **At least 50% of required skills are evidenced _and_ at least 2 optional skills are evidenced**
+## Features
 
-A candidate **FAIL**s otherwise.
+- GitHub API integration for public data
+- Rule-based, explainable matching
+- Command-line interface with readable output
+- Local persistence for reporting and export
+- CSV export for downstream review
+- Unit tests (mocked)
+- Integration tests (real API, opt-in)
+- Token-based authentication support
 
-### Why this approach?
+---
 
-- Keeps the screening logic **explainable and auditable**
-- Avoids overfitting or opaque scoring models
-- Allows strong optional signals to compensate for partial required coverage
-- Easy to communicate to candidates and reviewers
+## Requirements
 
-This matcher is intentionally conservative and is designed to be **one input into a broader hiring process**, not a final decision-maker.
+- **Python 3.10+**
+- `requests`
+- Optional: GitHub Personal Access Token
+
+---
+
+## Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd <cloned-repo>
+   ```
+2. **Create and activate virtual env:**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **For development (optional):**
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+---
+
+## Usage
+
+Scan usernames for given job
+```bash
+make scan JOB_ID=org-12345
+```
+
+View stored results:
+```bash
+make report JOB_ID=org-12345
+```
+
+Export results to CSV:
+```bash
+make report JOB_ID=org-12345
+make report JOB_ID=org-12345 min_score=50 #returns report of all who score > 50
+
+```
+---
+
+## Testing
+
+### Run Unit Tests
+```bash
+make test-unit
+```
+
+### Run All Tests (excluding integration)
+```bash
+make test-all
+```
+
+### Run Integration Tests (requires internet)
+```bash
+make test-integration
+```
+
+### Run All Tests
+```bash
+pytest -v
+```
+
+---
+
+## License
+
+This project is for personal and educational use.
+Reuse and modification are permitted.

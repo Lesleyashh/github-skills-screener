@@ -9,6 +9,8 @@ from github_api_app.evidence import extract_evidence
 from pathlib import Path
 import json
 
+SKILLS_CATALOG_PATH = Path("config/skills_catalog.json")
+
 
 def build_developer_profile(
     client: GitHubAPIClient,
@@ -16,6 +18,7 @@ def build_developer_profile(
     max_repos: int = 50,
     max_repos_to_scan: int = 20,
 ) -> Dict[str, Any]:
+    """Build a derived candidate profile from public GitHub data."""
     user: GitHubUser = client.get_user(username)
 
     user_block = {
@@ -61,6 +64,7 @@ def build_developer_profile(
 
 
 def _extract_activity(repos: List[GitHubRepository]) -> Dict[str, Any]:
+    """Compute recent activity metrics from repository's update timestamps."""
     most_recent: datetime | None = None
     for r in repos:
         dt = _parse_github_iso(r.updated_at)
@@ -79,6 +83,7 @@ def _extract_activity(repos: List[GitHubRepository]) -> Dict[str, Any]:
 
 
 def _parse_github_iso(s: str) -> datetime | None:
+    """Parse GitHub ISO timestamp strings into datetime objects."""
     try:
         if s.endswith("Z"):
             s = s.replace("Z", "+00:00")
@@ -87,12 +92,10 @@ def _parse_github_iso(s: str) -> datetime | None:
         return None
 
 
-SKILLS_CATALOG_PATH = Path("config/skills_catalog.json")
-
-
 def map_evidence_to_skills(
     evidence: Dict[str, bool], catalog_path: Path = SKILLS_CATALOG_PATH
 ) -> Dict[str, bool]:
+    """Aggregate low-level evidence signals into high-level skill flags."""
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     skills = catalog.get("skills", {})
     if not isinstance(skills, dict):

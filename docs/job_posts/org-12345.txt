@@ -16,6 +16,9 @@ Nice to have:
 - api_development (e.g., FastAPI/Flask/Django)
 
 Screening note:
-If you provide a GitHub username, we may use an automated tool to validate publicly available evidence
+If you provide a GitHub username below, we may use an automated tool to validate publicly available evidence
 in your repositories (e.g., presence of Dockerfile, tests, CI workflows). This is only one input into
 the process and does not replace interviews.
+
+
+Github Username: __________
