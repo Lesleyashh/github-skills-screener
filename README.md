@@ -166,9 +166,9 @@ make export JOB_ID=org-12345
 # or:
 make export
 # or optional filters:
-make export JOB_ID=org-12345 VERSION=1 MIN_SCORE=50
-#returns report of all who score > 50 for v1 of job config
-#defaultS: VERSION=1, MIN_SCORE=0 (All users)
+make export JOB_ID=org-12345 VERSION=1 MIN_SCORE=100
+#defaults: VERSION=1 (version of job config),
+#MIN_SCORE=0 (returns all users) or #MIN_SCORE=0 (returns only passes)
 ```
 ---
 
