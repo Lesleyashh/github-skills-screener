@@ -25,7 +25,7 @@ A lightweight, opt-in screening tool that validates file presence from **public 
 
 ## How it works
 
-# Assumption(s)
+### Assumption(s)
 - Users explicitly opts-in to screening by providing a GitHub username in job application
 - Recruiters provide a plain .txt file with **one username per line**.
 - The tool assumes use within an organisation that maintains consistent internal practices, including standardised job_id naming conventions and a minimum set of required and optional skills across roles
@@ -33,8 +33,8 @@ A lightweight, opt-in screening tool that validates file presence from **public 
 1. A **job role** defines required and optional **skills**
 2. Skills map to business-defined **evidence signals**
 3. Evidence signals map to **file glob patterns**
-4. Only public, non-forked, and non-archived repositories are scanned for matching file patterns, and candidates are scored based on the number of matches found.
-5. Results are stored locally in a lightweight SQLite database (`data/app.db`) to support reporting and exporting
+4. Only public, non-forked, and non-archived repositories are scanned for matching file patterns, and candidates are assigned PASS/FAIL based upon the number of matches found.
+5. Results are stored locally in a lightweight SQLite database (`data/app.db`) to support reporting and exporting.
 
 ---
 
@@ -70,7 +70,7 @@ Logic in github_api_app/matcher.py
 
 A GitHub PAT token is optional but recommended.
 
-## GitHub API endpoints used
+### GitHub API endpoints used
 
 - `GET /users/{username}`
 - `GET /users/{username}/repos`
@@ -166,7 +166,7 @@ make export JOB_ID=org-12345
 # or:
 make export
 # or optional filters:
-make report JOB_ID=org-12345 VERSION=1 MIN_SCORE=50
+make export JOB_ID=org-12345 VERSION=1 MIN_SCORE=50
 #returns report of all who score > 50 for v1 of job config
 #defaultS: VERSION=1, MIN_SCORE=0 (All users)
 ```
