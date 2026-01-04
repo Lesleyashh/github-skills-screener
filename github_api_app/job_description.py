@@ -24,9 +24,9 @@ class JobDescription:
     def load_json(path_or_job_id: str | Path) -> "JobDescription":
         """
         Accepts either:
-        - a file path to a Job description json, OR
-        - a job_id like "org-12345" which resolves to:
-          config/job_roles/<job_id>/job_skills.json
+        - a file path to a Job Description JSON, or
+        - a job_id like "org-12345", resolved to:
+        config/job_roles/<job_id>/job_skills.json
         """
         p = JobDescription._resolve_job_path(path_or_job_id)
 
@@ -37,23 +37,33 @@ class JobDescription:
 
         job_id = str(data.get("job_id", "")).strip()
         if not job_id:
-            # If the file didn't include job_id, infer it from directory name
+            # Infer job_id from directory name if not provided
             job_id = p.parent.name
+
+        skills_required = [
+            str(s).strip() for s in data.get("skills_required", []) if str(s).strip()
+        ]
+        skills_optional = [
+            str(s).strip() for s in data.get("skills_optional", []) if str(s).strip()
+        ]
+
+        # ---- Validation to enforce min job skills  ----
+        if len(skills_required) < 2:
+            raise ValueError(
+                f"Job Description must define at least 2 required skills: {p}"
+            )
+
+        if len(skills_optional) < 2:
+            raise ValueError(
+                f"Job Description must define at least 2 optional skills: {p}"
+            )
 
         jd = JobDescription(
             name=str(data["name"]),
             version=version,
             job_id=job_id,
-            skills_required=[
-                str(s).strip()
-                for s in data.get("skills_required", [])
-                if str(s).strip()
-            ],
-            skills_optional=[
-                str(s).strip()
-                for s in data.get("skills_optional", [])
-                if str(s).strip()
-            ],
+            skills_required=skills_required,
+            skills_optional=skills_optional,
             activity=dict(data.get("activity", {})),
             scoring=dict(data.get("scoring", {})),
         )

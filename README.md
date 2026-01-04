@@ -1,14 +1,13 @@
 # GitHub Skills Screener
 
-A lightweight, opt-in screening tool that validates file presence from **public GitHub users repos**
-against **explicit job skills criteria**.
+A lightweight, opt-in screening tool that validates file presence from **public GitHub user repos** as evidence of **explicit job skills criteria**.
 
 ---
 
 ## What this tool is for
 
 - Reducing **manual CV screening noise**
-- Making early-stage screening **consistent and explainable**
+- Helping make early-stage screening **consistent and explainable**
 - Supporting (not replacing) human review and interviews
 - Enabling **clear, actionable feedback** at early hiring stages
 
@@ -17,7 +16,7 @@ against **explicit job skills criteria**.
 ## What this tool is *not*
 
 - It does **not** judge code quality or architectural skill
-- It does **not** rank candidates by “strength”
+- It does **not** rank candidates
 - It does **not** penalise private or proprietary work
 - It does **not** scrape, clone, or inspect commit history
 - It does **not** infer seniority or proficiency from file presence
@@ -27,19 +26,19 @@ against **explicit job skills criteria**.
 ## How it works
 
 # Assumption(s)
-- Users explicitly opt-in to screening by providing a GitHub username in job application
+- Users explicitly opts-in to screening by providing a GitHub username in job application
 - Recruiters provide a plain .txt file with **one username per line**.
-- The tool is used within a single organisation with consistent recruitment practices
+- The tool assumes use within an organisation that maintains consistent internal practices, including standardised job_id naming conventions and a minimum set of required and optional skills across roles
 
 1. A **job role** defines required and optional **skills**
 2. Skills map to business-defined **evidence signals**
 3. Evidence signals map to **file glob patterns**
-4. Only Public non-forked and non-archived repositories are scanned to detect these file patterns and candidate given a score based on how many match.
+4. Only public, non-forked, and non-archived repositories are scanned for matching file patterns, and candidates are scored based on the number of matches found.
 5. Results are stored locally in a lightweight SQLite database (`data/app.db`) to support reporting and exporting
 
 ---
 
-### Screening rules
+### Screening logic
 
 A candidate **PASS**es if **either**:
 
@@ -127,11 +126,13 @@ A GitHub PAT token is optional but recommended.
    ```
 
 3. **Install dependencies:**
+Minimum dependencies needed for run time:
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **For development (optional):**
+Minimum dependencies needed for development:
    ```bash
    pip install -r requirements-dev.txt
    ```
@@ -140,21 +141,34 @@ A GitHub PAT token is optional but recommended.
 
 ## Usage
 
-Scan usernames for given job
+Optional: set a default job_id
+```bash
+export JOB_ID=org-12345
+```
+
+Scan usernames:
 ```bash
 make scan JOB_ID=org-12345
+# or (if you exported JOB_ID already):
+make scan
 ```
 
 View stored results:
 ```bash
 make report JOB_ID=org-12345
+# or:
+make report
 ```
 
 Export results to CSV:
 ```bash
-make report JOB_ID=org-12345
-make report JOB_ID=org-12345 min_score=50 #returns report of all who score > 50
-
+make export JOB_ID=org-12345
+# or:
+make export
+# or optional filters:
+make report JOB_ID=org-12345 VERSION=1 MIN_SCORE=50
+#returns report of all who score > 50 for v1 of job config
+#defaultS: VERSION=1, MIN_SCORE=0 (All users)
 ```
 ---
 

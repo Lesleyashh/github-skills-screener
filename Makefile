@@ -91,6 +91,6 @@ VERSION ?= 1
 export: ensure-report-dir
 	$(PY) main.py export \
 		--job-id $(JOB_ID) \
-		--out reports/$(JOB_ID)/report.csv
-		--min-score $(MIN_SCORE)
+		--out reports/$(JOB_ID)/report.csv \
+		--min-score $(MIN_SCORE) \
 		--version $(VERSION)

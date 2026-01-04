@@ -14,25 +14,25 @@ This project is intentionally **configuration-driven**. New job roles, candidate
 
 Follow the steps below to add a new job role and run a screening.
 
-### **1\. Choose a job and define its job_id**
+### **1\. Select role and assign unique JOB_ID **
 
-Select the role you want to screen for and record its **business-defined job ID**, for example:
+Identitfy the role you want to screen and note its **business-defined job ID**, for example:
 
 JOB_ID="org-67890"
 
-This identifier is used consistently throughout the system.
+This identifier is used consistently throughout the system to associate job criteria, candidates, and results.
 
 * * * * *
 
 ### **2\. Create the job role configuration directory**
 
-Create a directory for the job role under config/job_roles/:
+Create a directory for the job role under `config/job_roles/`:
 
-mkdir -p "config/job_roles/${JOB_ID}"
+`mkdir -p "config/job_roles/${JOB_ID}"`
 
 Example:
 
-mkdir -p "config/job_roles/org-67890"
+`mkdir -p "config/job_roles/org-67890"`
 
 * * * * *
 
@@ -40,17 +40,15 @@ mkdir -p "config/job_roles/org-67890"
 
 Copy the template file and edit the values as needed:
 
-cp config/job_roles/_template/job_skills.example.json
-
-config/job_roles/${JOB_ID}/job_skills.json
+`cp config/job_roles/_template/job_skills.example.json config/job_roles/${JOB_ID}/job_skills.json`
 
 Ensure that:
 
 -   job_id in the file matches the directory name
 
--   Required and optional skills exist in config/skills_catalog.json
+-   Required and optional skills exist in config/skills_catalog.json (at least two of each as required by business)
 
--   Increment the version if criteria change
+-   Increment the version if job criteria changes
 
 * * * * *
 
@@ -58,7 +56,7 @@ Ensure that:
 
 Candidate input is stored separately from configuration:
 
-mkdir -p "candidate_input/job_roles/${JOB_ID}"
+`mkdir -p "candidate_input/job_roles/${JOB_ID}"`
 
 * * * * *
 
@@ -66,9 +64,7 @@ mkdir -p "candidate_input/job_roles/${JOB_ID}"
 
 Create the usernames file from the example:
 
-cp -n candidate_input/job_roles/${JOB_ID}/usernames.example.txt
-
-candidate_input/job_roles/${JOB_ID}/usernames.txt
+`cp -n candidate_input/job_roles/${JOB_ID}/usernames.example.txt candidate_input/job_roles/${JOB_ID}/usernames.txt`
 
 Notes:
 
@@ -84,19 +80,19 @@ Notes:
 
 Once configured, you can run the scan:
 
-make scan JOB_ID=${JOB_ID}
+`make scan JOB_ID=${JOB_ID}`
 
 Example:
 
-make scan JOB_ID=org-67890
+`make scan JOB_ID=org-67890`
 
 View results:
 
-make report JOB_ID=${JOB_ID}
+`make report JOB_ID=${JOB_ID}`
 
 Export results to CSV:
 
-make export JOB_ID=${JOB_ID}
+`make export JOB_ID=${JOB_ID}`
 
 * * * * *
 
@@ -106,11 +102,11 @@ make export JOB_ID=${JOB_ID}
 
 High-level skills are defined in:
 
-config/skills_catalog.json
+`./config/skills_catalog.json`
 
 Each skill maps to one or more **low-level evidence signals**, which define how skills are detected based on file presence. These live in:
 
-config/skills_evidence_catalog.json
+`./config/skills_evidence_catalog.json`
 
 When adding new skills or evidence signals:
 
@@ -130,9 +126,9 @@ Code contributions are welcome but should be small, focused, and covered by test
 
 Before contributing code, run:
 
-make lint
+`make lint`
 
-make test
+`make test`
 
 * * * * *
 
@@ -174,7 +170,7 @@ Contributions are welcome via pull request.
 
 -   Run tests locally:
 
-make test-unit
+`make test-unit`
 
 ### **Review principles**
 
