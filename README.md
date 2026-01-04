@@ -118,7 +118,7 @@ A GitHub PAT token is optional but recommended.
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd <cloned-repo>
+   cd <path/to/cloned/repo>
    ```
 2. **Create and activate virtual env:**
    ```bash
