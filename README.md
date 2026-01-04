@@ -167,8 +167,8 @@ make export JOB_ID=org-12345
 make export
 # or optional filters:
 make export JOB_ID=org-12345 VERSION=1 MIN_SCORE=100
-#defaults: VERSION=1 (version of job config),
-#MIN_SCORE=0 (returns all users) or #MIN_SCORE=100 (returns only passes)
+#defaults: VERSION=1 (version of job config), MIN_SCORE=0 (returns all users passed and failed).
+# when MIN_SCORE=100 report returns only passes
 ```
 ---
 
