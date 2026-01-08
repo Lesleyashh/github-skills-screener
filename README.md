@@ -121,20 +121,19 @@ A GitHub PAT token is optional but recommended.
    ```
 2. **Create and activate virtual env:**
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate
+   make venv
    ```
 
 3. **Install dependencies:**
 Minimum dependencies needed for run time:
    ```bash
-   pip install -r requirements.txt
+   make install
    ```
 
 4. **For development (optional):**
 Minimum dependencies needed for development:
    ```bash
-   pip install -r requirements-dev.txt
+   make install-dev
    ```
 
 ---
@@ -192,6 +191,11 @@ make test-integration
 ### Run All Tests
 ```bash
 pytest -v
+```
+
+### Run Pre-commit
+```bash
+make lint
 ```
 
 ---
